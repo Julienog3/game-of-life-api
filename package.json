@@ -1,0 +1,27 @@
+{
+  "name": "game-of-life-back",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node dist/app.js",
+    "dev:tsc": "tsc --watch --preserveWatchOutput",
+    "dev:node": "node --enable-source-maps --watch dist/app.js",
+    "dev": "npm run dev:tsc & npm run dev:node",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.12.11",
+    "prisma": "^5.13.0",
+    "typescript": "^5.4.5"
+  }
+}
