@@ -1,4 +1,4 @@
-import { Configuration, Pattern, PrismaClient } from '@prisma/client'
+import { Configuration, PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default {

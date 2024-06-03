@@ -22,8 +22,6 @@ export default {
   }
 }
 
-// function create(newArtist) { ... }
-
 // function update(id, updatedArtist) { ... }
 
 // function remove(id) { ... }
