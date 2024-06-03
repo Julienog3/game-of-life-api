@@ -8,13 +8,14 @@
     "start": "node dist/app.js",
     "dev:tsc": "tsc --watch --preserveWatchOutput",
     "dev:node": "node --enable-source-maps --watch dist/app.js",
-    "dev": "npm run dev:tsc & npm run dev:node",
+    "dev": "pnpm run \"/dev:/\"",
     "build": "tsc"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "5.14.0",
     "express": "^4.19.2"
   },
   "devDependencies": {
