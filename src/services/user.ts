@@ -1,5 +1,5 @@
 import { User, PrismaClient } from "@prisma/client"
-import crypto from 'node:crypto'
+import { hashPassword } from "../lib/hash.js"
 
 const prisma = new PrismaClient()
 
@@ -10,12 +10,12 @@ export default {
   },
   async create(newUser: User): Promise<User> {
     const { password, ...payload } = newUser
-
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex')
+    const { hash, salt } = hashPassword(password) 
 
     const user = await prisma.user.create({ data: {
       ...payload,
-      password: hashedPassword
+      password: hash,
+      salt
     }})
     return user
   }

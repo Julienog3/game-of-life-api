@@ -1,4 +1,4 @@
-import { Configuration, PrismaClient } from '@prisma/client'
+import { Configuration, Prisma, PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 
 export default {
@@ -16,8 +16,23 @@ export default {
     return configuration
   },
   async create(newConfiguration: Configuration): Promise<Configuration> {
-    const configuration = await prisma.configuration.create({ data: newConfiguration })
-    return configuration 
+    // const existingConfiguration = await prisma.configuration.findUnique({
+    //   where: { name: newConfiguration.name }
+    // })
+
+    // if (existingConfiguration) throw new Error('Configuration already exist')
+
+    try {
+      const configuration = await prisma.configuration.create({ data: newConfiguration })
+      return configuration 
+    } catch (e) {
+      if (e instanceof Prisma.PrismaClientKnownRequestError) {
+        console.log(e)
+        // TODO: Add errors
+      }
+      throw e
+    }
+
   },
   async update(id: number, updatedConfiguration: Configuration): Promise<Configuration> {
     const updateConfiguration = await prisma.configuration.update({
