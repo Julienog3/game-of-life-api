@@ -20,9 +20,16 @@ export default {
     // @ts-expect-error
     const pattern = await prisma.pattern.create({ data: newPattern })
     return pattern 
+  },
+  async update(id: number, updatedPattern: Pattern): Promise<Pattern> {
+    const updatePattern = await prisma.pattern.update({
+      where: { id },
+      //@ts-expect-error
+      data: updatedPattern
+    })
+    return updatePattern
+  },
+  async delete(id: number): Promise<void> {
+    await prisma.pattern.delete({ where: { id }})
   }
 }
-
-// function update(id, updatedArtist) { ... }
-
-// function remove(id) { ... }

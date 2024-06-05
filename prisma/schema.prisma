@@ -31,11 +31,12 @@ model Pattern {
   name            String        @unique
   configuration   Configuration @relation(fields: [configurationId], references: [id])
   configurationId Int
-  bounding        String
+  boundingX       Int
+  boundingY       Int
   cells           Int
   period          Int
   speed           String
-  map             Json
+  pattern         Json
   description     String
   creator         String
 }

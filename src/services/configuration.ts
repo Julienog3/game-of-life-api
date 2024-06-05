@@ -45,7 +45,3 @@ export default {
     await prisma.configuration.delete({ where: { id }})
   }
 }
-
-// function update(id, updatedArtist) { ... }
-
-// function remove(id) { ... }
