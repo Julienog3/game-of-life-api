@@ -12,13 +12,14 @@ export default {
       const jwtToken = jwt.sign({ email: credentials.email }, process.env.JWT_SECRET, {
         expiresIn: '1h'
       })
-      res.cookie('jwtToken', jwtToken, { httpOnly: true, secure: true })
+      res.cookie('jwtToken', jwtToken, { httpOnly: true, secure: false })
       return res.status(200).json({ isAuthenticated, jwtToken })
     }
     
     return res.status(401).json({ message: "Authentification échouée." });
   },
   async logout(req: Request, res: Response) {
-    // TODO: Implement logout func 
+    res.clearCookie('jwtToken', { path: '/' })
+    return res.status(204).json()
   }
 }

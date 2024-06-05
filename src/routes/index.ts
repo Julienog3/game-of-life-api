@@ -9,9 +9,8 @@ const router = express.Router()
 
 router.use(express.json()); 
 router.use('/auth', authRoutes)
-router.use(auth)
 router.use('/patterns', patternRoutes)
 router.use('/configurations', configurationRoutes)
-router.use('/users', userRoutes)
+router.use('/users', auth, userRoutes)
 
 export default router
