@@ -1,36 +1,46 @@
-import type { Request, Response } from "express";
 import configurationService from "../services/configuration.js";
+import { RequestHandlerArgs } from "../types/index.js";
 
-export default {
-  async list(req: Request, res: Response) {
-    const patterns = await configurationService.findAll()
-    res.status(200).json(patterns);
+const configurationController = {
+  list: async (...args: RequestHandlerArgs) => {
+    const [_, res, next] = args
+
+    try {
+      const patterns = await configurationService.findAll()
+      res.status(200).json(patterns);
+    } catch (err) {
+      next(err)
+    }
   },
-  async read(req: Request, res: Response) {
+  read: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
     const { id: configurationId } = req.params;
 
     if (!configurationId) {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    const configuration = await configurationService.find(+configurationId);
-    if (configuration) {
+    try {
+      const configuration = await configurationService.find(+configurationId);
       res.status(200).json(configuration);
-    } else {
-      res.status(404).json({ message: "Configuration non trouvé" });
+    } catch (err) {
+      next(err)
     }
   },
-  async create(req: Request, res: Response) {
-    const { body: datas } = req;
-    const createdConfiguration = await configurationService.create(datas);
-
-    if (createdConfiguration) {
+  create: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
+    const { body: payload } = req;
+    
+    try {
+      await configurationService.create(payload);
       res.status(201).json({ message: "Configuration créé" });
-    } else {
-      res.status(400).json({ message: "Erreur lors de l'insertion" });
+    } catch (err) {
+      next(err)
     }
   },
-  async update(req: Request, res: Response) {
+  update: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
+    
     const { id: configurationId } = req.params;
     const { body: payload } = req;
 
@@ -38,22 +48,28 @@ export default {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    const updatedConfiguration = await configurationService.update(+configurationId, payload)
-
-    if (updatedConfiguration) {
+    try {
+      await configurationService.update(+configurationId, payload)
       res.status(201).json({ message: "Configuration modifié" });
-    } else {
-      res.status(400).json({ message: "Erreur lors de l'insertion" });
+    } catch(err) {
+      next(err)
     }
   },
-  async remove(req: Request, res: Response) {
+  remove: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
     const { id: configurationId } = req.params;
 
     if (!configurationId) {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    await configurationService.delete(+configurationId)
-    res.status(204).json({ message: "Configuration supprimé" });
+    try {
+      await configurationService.delete(+configurationId)
+      res.status(204).json({ message: "Configuration supprimé" });
+    } catch (err) {
+      next(err)
+    }
   }
 }
+
+export default configurationController

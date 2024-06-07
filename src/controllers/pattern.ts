@@ -1,12 +1,19 @@
-import type { Request, Response } from 'express';
 import patternService from './../services/pattern.js'
+import { RequestHandlerArgs } from '../types/index.js';
 
-export default {
-  async list(req: Request, res: Response) {
-    const patterns = await patternService.findAll()
-    res.status(200).json(patterns);
+const patternController = {
+  list: async (...args: RequestHandlerArgs) => {
+    const [_, res, next] = args
+
+    try {
+      const patterns = await patternService.findAll()
+      res.status(200).json(patterns);
+    } catch (err) {
+      next(err)
+    }
   },
-  async read(req: Request, res: Response) {
+  read: async (...args: RequestHandlerArgs) => {
+    const [req, res] = args
     const { id: patternId } = req.params
 
     if (!patternId) return
@@ -19,17 +26,20 @@ export default {
       res.status(404).json({ message: "Pattern not found" })
     }
   },
-  async create(req: Request, res: Response) {
+  create: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
     const { body: payload } = req;
-    const createdPattern = await patternService.create(payload);
 
-    if (createdPattern) {
-      res.status(201).json({ message: "Pattern créé" });
-    } else {
-      res.status(400).json({ message: "Erreur lors de l'insertion" });
+    try {
+      const createdPattern = await patternService.create(payload);
+      res.status(201).json({ pattern: createdPattern });
+    } catch (err) {
+      next(err)
     }
   },
-  async update(req: Request, res: Response) {
+  update: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
+
     const { id: patternId } = req.params;
     const { body: payload } = req;
 
@@ -37,22 +47,28 @@ export default {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    const updatedPattern = await patternService.update(+patternId, payload)
-
-    if (updatedPattern) {
-      res.status(201).json({ message: "Pattern modifié" });
-    } else {
-      res.status(400).json({ message: "Erreur lors de l'insertion" });
+    try {
+      const updatedPattern = await patternService.update(+patternId, payload)
+      res.status(201).json({ pattern: updatedPattern });
+    } catch (err) {
+      next(err)
     }
   },
-  async remove(req: Request, res: Response) {
+  remove: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
     const { id: patternId } = req.params;
 
     if (!patternId) {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    await patternService.delete(+patternId)
-    res.status(204).json({ message: "pattern supprimé" });
+    try {
+      await patternService.delete(+patternId)
+      res.status(204).json();
+    } catch (err) {
+      next(err)
+    }   
   }
 }
+
+export default patternController

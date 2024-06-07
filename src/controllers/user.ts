@@ -1,36 +1,46 @@
-import type { Request, Response } from 'express';
 import userService from "../services/user.js";
+import { RequestHandlerArgs } from '../types/index.js';
 
-export default {
-  async list(req: Request, res: Response) {
-    const users = await userService.findAll();
-    res.status(200).json(users);
+const userController = {
+  list: async (...args: RequestHandlerArgs) => {
+    const [_, res, next] = args
+
+    try {
+      const users = await userService.findAll();
+      res.status(200).json(users);
+    } catch (err) {
+      next(err)
+    }
   },
-  async read(req: Request, res: Response) {
+  read: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
     const { id: userId } = req.params;
 
     if (!userId) {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    const user = await userService.find(+userId);
-    if (user) {
+    try {
+      const user = await userService.find(+userId);
       res.status(200).json(user);
-    } else {
-      res.status(404).json({ message: "Utilisateur non trouvé" });
+    } catch (err) {
+      next(err)
     }
   },
-  async create(req: Request, res: Response) {
+  create: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
     const { body: payload } = req;
-    const createdUser = await userService.create(payload);
 
-    if (createdUser) {
-      res.status(201).json({ message: "Utilisateur créé" });
-    } else {
-      res.status(400).json({ message: "Erreur lors de l'insertion" });
+    try {
+      const createdUser = await userService.create(payload);
+      res.status(201).json({ user: createdUser });
+    } catch (err) {
+      next(err)
     }
   },
-  async update(req: Request, res: Response) {
+  update: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
+
     const { id: userId } = req.params;
     const { body: payload } = req;
 
@@ -38,22 +48,28 @@ export default {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    const updatedUser = await userService.update(+userId, payload)
-
-    if (updatedUser) {
-      res.status(201).json({ message: "Utilisateur modifié" });
-    } else {
-      res.status(400).json({ message: "Erreur lors de l'insertion" });
+    try {
+      const updatedUser = await userService.update(+userId, payload)
+      res.status(201).json({ user: updatedUser });
+    } catch (err) {
+      next(err)
     }
   },
-  async remove(req: Request, res: Response) {
+  remove: async (...args: RequestHandlerArgs) => {
+    const [req, res, next] = args
     const { id: userId } = req.params;
 
     if (!userId) {
       return res.status(404).json({ message: "Identifiant manquant" });
     }
 
-    await userService.delete(+userId)
-    res.status(204).json({ message: "User supprimé" });
+    try {
+      await userService.delete(+userId)
+      res.status(204).json();
+    } catch (err) {
+      next(err)
+    }
   }
 }
+
+export default userController
