@@ -8,7 +8,7 @@ export type Credentials = {
 
 const prisma = new PrismaClient()
 
-export default {
+const authService = {
   async authenticate(credentials: Credentials) {
     const { email, password } = credentials 
 
@@ -16,3 +16,5 @@ export default {
     return verifyPassword(password,user.salt, user.password)
   }
 }
+
+export default authService

@@ -4,7 +4,11 @@ const prisma = new PrismaClient()
 
 export default {
   async findAll(): Promise<Pattern[]> {
-    const patterns = await prisma.pattern.findMany()
+    const patterns = await prisma.pattern.findMany({
+      include: {
+        configuration: true,
+      },
+    })
     return patterns 
   },
   async find(id: number): Promise<Pattern> {
@@ -16,10 +20,14 @@ export default {
 
     return pattern
   },
-  async create(newPattern: Pattern): Promise<Pattern> {
-    // @ts-expect-error
-    const pattern = await prisma.pattern.create({ data: newPattern })
-    return pattern 
+  async create(newPattern: Pattern) {
+    try {
+      // @ts-expect-error
+      const pattern = await prisma.pattern.create({ data: newPattern })
+      return pattern 
+    } catch (e) {
+      console.log(e)
+    }
   },
   async update(id: number, updatedPattern: Pattern): Promise<Pattern> {
     const updatePattern = await prisma.pattern.update({

@@ -8,6 +8,5 @@ export function hashPassword(password: string) {
 
 export function verifyPassword(password: string, salt: string, hash: string) {
   const newHash = scryptSync(password, salt, 32).toString('hex')
-  console.log({ newHash })
   return timingSafeEqual(Buffer.from(hash), Buffer.from(newHash))
 }

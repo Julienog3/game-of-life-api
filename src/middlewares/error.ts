@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client"
-import type { Request, Response, ErrorRequestHandler } from 'express';
+import type {  ErrorRequestHandler } from 'express';
 
 export class CustomError {
   readonly code: number
@@ -30,6 +30,8 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     error = handlePrismaError(err)
   }
+
+  error.code = error.code || 500
 
   // TODO: Handle JWT Error
   return res.status(error.code).json({ status: error.code, message: error.message });
