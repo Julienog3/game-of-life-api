@@ -13,7 +13,10 @@ export default {
   },
   async find(id: number): Promise<Pattern> {
     const pattern = await prisma.pattern.findUnique({
-      where: { id }
+      where: { id },
+      include: {
+        configuration: true,
+      },
     })
     
     if (!pattern) throw new Error('chiant')

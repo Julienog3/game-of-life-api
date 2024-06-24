@@ -34,8 +34,8 @@ model Pattern {
   boundingX       Int
   boundingY       Int
   cells           Int
-  period          Int
-  speed           String
+  period          Int?
+  speed           Int?
   pattern         Json
   description     String
   creator         String
