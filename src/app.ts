@@ -6,7 +6,7 @@ import cors from 'cors'
 
 const app = express();
 app.use(cookieParser())
-app.use(cors())
+app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }))
 
 const hostname = '127.0.0.1';
 const port = process.env.PORT || 3000;
